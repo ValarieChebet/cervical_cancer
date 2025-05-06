@@ -1,5 +1,3 @@
-# Create the README content for the project
-readme_content = """
 # 🧬 Cervical Cancer Risk Prediction App
 
 An AI-powered, multilingual web application built with Streamlit that predicts the risk of cervical cancer based on patient input. It supports PDF report generation and is accessible online.
@@ -23,7 +21,7 @@ An AI-powered, multilingual web application built with Streamlit that predicts t
 
 | Input Form | Prediction Tab | PDF Download |
 |------------|----------------|--------------|
-| ![Form Screenshot](docs/form_screenshot.png) | ![Prediction Screenshot](docs/prediction_screenshot.png) | ![PDF Screenshot](docs/pdf_screenshot.png) |
+| ![Form Screenshot](input_app.png) | ![Prediction Screenshot](result_app.png) | ![PDF Screenshot](result_app.png) |
 
 > (You can add actual screenshots in a `docs/` folder)
 
