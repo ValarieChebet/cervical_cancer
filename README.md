@@ -55,7 +55,7 @@ Place your `cervicalcancer.pkl` file (a joblib-serialized scikit-learn model) in
 ### 4. Run the App
 
 ```bash
-streamlit run your_script_name.py
+streamlit run cervical_cancer_prediction.py
 ```
 
 ---
