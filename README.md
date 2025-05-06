@@ -30,8 +30,8 @@ An AI-powered, multilingual web application built with **Streamlit** that predic
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/cervical-cancer-predictor.git
-cd cervical-cancer-predictor
+git clone https://github.com/sanjanachauhan2008/cervical_cancer.git
+cd cervical_cancer
 ```
 
 ### 2. Install Dependencies
@@ -90,8 +90,7 @@ Additional languages can be added through the `translations` dictionary in the s
 Your trained model should expect the following features in this exact order:
 
 ```python
-[Age, PoR, ES, SES, Parity, AgeFirstP, MC, MH, Contraception, 
- Smoking, HRHPV, IL6, IL1beta, TNFalpha, IL1RN]
+[Age, Place of Residence, Educational Status, Socio-Economic Status, Parity, Age at First Parity, Menstrual Cycle, Menstrual Hygiene, Use of Contraception, Smoking, HRHPV, IL6, IL1beta, TNFalpha, IL1RN]
 ```
 
 - All features must be numerically encoded.  
