@@ -29,6 +29,7 @@ translations = {
     },
     "Name": {"hi": "नाम", "es": "Nombre", "fr": "Nom"},
     "Location": {"hi": "स्थान", "es": "Ubicación", "fr": "Emplacement"},
+    "Country": {"hi": "देश", "es": "País", "fr": "Pays"},
     "Submit": {"hi": "जमा करें", "es": "Enviar", "fr": "Soumettre"},
     "Download PDF Report": {
         "hi": "पीडीएफ रिपोर्ट डाउनलोड करें",
@@ -37,14 +38,8 @@ translations = {
     }
 }
 
-
-
 def t(text, lang):
     return translations.get(text, {}).get(lang, text)
-
-
-
-
 
 def create_pdf(patient_name, prediction_result, details):
     buffer = io.BytesIO()
@@ -93,6 +88,7 @@ with st.sidebar:
     st.header(f"👩‍⚕️ {t('Patient Details', lang_code)}")
     user_name = st.text_input(f"📝 {t('Name', lang_code)}")
     user_location = st.text_input(f"📍 {t('Location', lang_code)}")
+    user_country = st.text_input(f"🌍 {t('Country', lang_code)}")
 
 # Tabs
 tab1, tab2 = st.tabs(["🧾 Input Form", "📊 Prediction Result"])
@@ -168,6 +164,7 @@ with tab2:
         patient_details = {
             "Name": user_name,
             "Location": user_location,
+            "Country": user_country,
             "Age": Age,
             "Gender": gender,
             "PoR": PoR,
@@ -192,3 +189,21 @@ with tab2:
             file_name="cervical_cancer_report.pdf",
             mime="application/pdf"
         )
+
+        # Helpful resources section
+        st.markdown("### 🌐 Find Help or More Information")
+
+        st.markdown(
+            """
+            - 🔍 [Search Nearby Gynecologists on Google Maps](https://www.google.com/maps/search/gynecologist+near+me)
+            - 🏥 [Search Hospitals Near You](https://www.google.com/maps/search/hospitals+near+me)
+            - 📚 [WHO Cervical Cancer Info](https://www.who.int/health-topics/cervical-cancer)
+            - 📖 [CDC Cervical Cancer Resources](https://www.cdc.gov/cancer/cervical/)
+            - 💡 [National Cancer Institute – Cervical Cancer](https://www.cancer.gov/types/cervical)
+            """
+        )
+
+        if user_location:
+            search_query = user_location.replace(" ", "+")
+            map_url = f"https://www.google.com/maps/search/gynecologist+in+{search_query}"
+            st.markdown(f"🔍 [Find gynecologists near {user_location}]({map_url})")
