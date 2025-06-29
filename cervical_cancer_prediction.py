@@ -9,7 +9,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 
 # Load model
-MODEL_PATH = "cervicalcancer.pkl"
+MODEL_PATH = "logistic_regression_cancer_risk_model.pkl"
 model = joblib.load(MODEL_PATH)
 
 # Supported languages
@@ -95,29 +95,21 @@ tab1, tab2 = st.tabs(["🧾 Input Form", "📊 Prediction Result"])
 
 with tab1:
     with st.form("cervical_form"):
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
 
         with col1:
-            gender = st.radio("Gender", ["Female", "Male"])
-            Age = st.slider("Age", 1, 110, 30)
-            PoR = st.radio("Place of Residence", ["Rural", "Urban"])
-            ES = st.radio("Educational Status", ["Illiterate", "Literate"])
-            SES = st.radio("Socio-economic Status", ["Lower", "Middle", "Upper"])
+            age = st.slider("Age", 1, 110, 30)
+            sexual_partners = st.slider("Number of Sexual Partners", 0, 50, 1)
+            first_sexual_activity_age = st.slider("Age at First Sexual Activity", 10, 50, 18)
+            hpv_test_result = st.radio("HPV Test Result", ["Positive", "Negative"])
+            pap_smear_result = st.radio("Pap Smear Result", ["Positive", "Negative"])
 
         with col2:
-            Parity = st.radio("Parity", ["None", "≤2", "more_than_2"])
-            AgefirstP = st.radio("Age at First Full-Term Pregnancy", ["≤20", "more_than_20"])
-            MC = st.radio("Menstrual Cycle", ["Regular", "Irregular"])
-            MH = st.radio("Menstrual Hygiene", ["Napkin", "Cloths"])
-            Contraception = st.radio("Use of Contraception", ["Oral contraceptive pills", "Others"])
-
-        with col3:
-            Smoking = st.radio("Smoking", ["Passive", "Active"])
-            HRHPV = st.radio("High-risk HPV", ["Negative", "Positive"])
-            IL6 = st.radio("IL6", ['GG', 'AA', 'AG'])
-            IL1beta = st.radio("IL1beta", ['TT', 'CT', 'CC'])
-            TNFalpha = st.radio("TNFalpha", ['GG', 'AA', 'GA'])
-            IL1RN = st.selectbox("IL1RN", ['I I', 'II II', 'I II', 'I IV', 'II III', 'I III', 'II IV'])
+            smoking_status = st.radio("Smoking Status", ["Never", "Former", "Current"])
+            stds_history = st.radio("History of STDs", ["Yes", "No"])
+            region = st.radio("Region", ["Urban", "Rural"])
+            insurance_covered = st.radio("Insurance Covered", ["Yes", "No"])
+            screening_type_last = st.radio("Last Screening Type", ["Pap Smear", "HPV Test", "Both", "None"])
 
         submitted = st.form_submit_button(t("Submit", lang_code))
 
@@ -126,35 +118,23 @@ with tab1:
 
 with tab2:
     if submitted:
-        gender_val = 1 if gender == "Male" else 0
-        PoR_val = 2 if PoR == "Urban" else 0
-        ES_val = 2 if ES == "Literate" else 1
-        SES_val = {"Lower": 3, "Middle": 2, "Upper": 1}[SES]
-        Parity_val = {"None": 1, "≤2": 2, "more_than_2": 3}[Parity]
-        AgefirstP_val = 1 if AgefirstP == "≤20" else 2
-        MC_val = 1 if MC == "Regular" else 2
-        MH_val = 1 if MH == "Napkin" else 2
-        Contraception_val = 1 if Contraception == "Others" else 2
-        Smoking_val = 1 if Smoking == "Active" else 2
-        HRHPV_val = 2 if HRHPV == "Positive" else 1
-        IL6_val = {"AG": 2, "AA": 1, "GG": 3}[IL6]
-        IL1beta_val = {"TT": 1, "CT": 2, "CC": 3}[IL1beta]
-        TNFalpha_val = {"GG": 1, "AA": 2, "GA": 3}[TNFalpha]
-        IL1RN_val = {
-            'I I': 1, 'II II': 2, 'I II': 3, 'I IV': 4, 'II III': 5, 'I III': 6, 'II IV': 7
-        }.get(IL1RN, 0)
+        hpv_test_result_val = 1 if hpv_test_result == "Positive" else 0
+        pap_smear_result_val = 1 if pap_smear_result == "Positive" else 0
+        smoking_status_val = {"Never": 0, "Former": 1, "Current": 2}[smoking_status]
+        stds_history_val = 1 if stds_history == "Yes" else 0
+        region_val = 1 if region == "Urban" else 0
+        insurance_covered_val = 1 if insurance_covered == "Yes" else 0
+        screening_type_last_val = {"Pap Smear": 0, "HPV Test": 1, "Both": 2, "None": 3}[screening_type_last]
 
-        input_data = np.array([[Age, PoR_val, ES_val, SES_val, Parity_val, AgefirstP_val,
-                                MC_val, MH_val, Contraception_val, Smoking_val, HRHPV_val,
-                                IL6_val, IL1beta_val, TNFalpha_val, IL1RN_val]])
+        input_data = np.array([[age, sexual_partners, first_sexual_activity_age, hpv_test_result_val, 
+                                pap_smear_result_val, smoking_status_val, stds_history_val, 
+                                region_val, insurance_covered_val, screening_type_last_val]])
 
         result = model.predict(input_data)
         patient_display = user_name.strip() if user_name else "Patient"
 
         st.markdown("### 🧪 Prediction Result")
-        if gender_val == 1:
-            st.warning("⚠️ This prediction tool is intended for biological females. Your result may be invalid.")
-        elif result[0] == 1:
+        if result[0] == 1:
             st.error(f"🔬 {patient_display}, you may have a risk of Cervical Cancer.")
         else:
             st.success(f"✅ {patient_display}, no indication of Cervical Cancer risk was found.")
@@ -165,45 +145,4 @@ with tab2:
             "Name": user_name,
             "Location": user_location,
             "Country": user_country,
-            "Age": Age,
-            "Gender": gender,
-            "PoR": PoR,
-            "Education": ES,
-            "SES": SES,
-            "Parity": Parity,
-            "First Pregnancy Age": AgefirstP,
-            "Menstrual Cycle": MC,
-            "Menstrual Hygiene": MH,
-            "Contraception": Contraception,
-            "Smoking": Smoking,
-            "HPV": HRHPV,
-            "IL6": IL6,
-            "IL1beta": IL1beta,
-            "TNFalpha": TNFalpha,
-            "IL1RN": IL1RN
-        }
-        pdf_data = create_pdf(patient_display, result[0], patient_details)
-        st.download_button(
-            label=t("Download PDF Report", lang_code),
-            data=pdf_data,
-            file_name="cervical_cancer_report.pdf",
-            mime="application/pdf"
-        )
-
-        # Helpful resources section
-        st.markdown("### 🌐 Find Help or More Information")
-
-        st.markdown(
-            """
-            - 🔍 [Search Nearby Gynecologists on Google Maps](https://www.google.com/maps/search/gynecologist+near+me)
-            - 🏥 [Search Hospitals Near You](https://www.google.com/maps/search/hospitals+near+me)
-            - 📚 [WHO Cervical Cancer Info](https://www.who.int/health-topics/cervical-cancer)
-            - 📖 [CDC Cervical Cancer Resources](https://www.cdc.gov/cancer/cervical/)
-            - 💡 [National Cancer Institute – Cervical Cancer](https://www.cancer.gov/types/cervical)
-            """
-        )
-
-        if user_location:
-            search_query = user_location.replace(" ", "+")
-            map_url = f"https://www.google.com/maps/search/gynecologist+in+{search_query}"
-            st.markdown(f"🔍 [Find gynecologists near {user_location}]({map_url})")
+            "Age": age,}

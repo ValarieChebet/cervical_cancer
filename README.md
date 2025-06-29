@@ -2,9 +2,6 @@
 
 An AI-powered, multilingual web application built with **Streamlit** that predicts the risk of cervical cancer based on patient input. It supports PDF report generation and is accessible online.
 
-🔗 **Live App**: [https://cervicalcancertest.streamlit.app/](https://cervicalcancertest.streamlit.app/)
-
----
 
 ## 🧰 Features
 
@@ -30,7 +27,7 @@ An AI-powered, multilingual web application built with **Streamlit** that predic
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/sanjanachauhan2008/cervical_cancer.git
+git clone https://github.com/REPO-NAME-/cervical_cancer.git
 cd cervical_cancer
 ```
 
@@ -64,7 +61,7 @@ streamlit run cervical_cancer_prediction.py
 
 ```
 📁 cervical-cancer-predictor/
-├── cervicalcancer.pkl              # Trained ML model (user-provided)
+├── logistic_regression_cancer_risk_model.pkl  and xgboost_cancer_risk_model            # Trained ML model (user-provided)
 ├── your_script_name.py            # Streamlit app code
 ├── README.md                      # This file
 └── requirements.txt               # Dependency file
@@ -85,13 +82,7 @@ Additional languages can be added through the `translations` dictionary in the s
 
 ---
 
-## 🧠 Model Requirements
 
-Your trained model should expect the following features in this exact order:
-
-```python
-[Age, Place of Residence, Educational Status, Socio-Economic Status, Parity, Age at First Parity, Menstrual Cycle, Menstrual Hygiene, Use of Contraception, Smoking, HRHPV, IL6, IL1beta, TNFalpha, IL1RN]
-```
 
 - All features must be numerically encoded.  
 - Feature processing is already handled in the app's backend.
@@ -119,10 +110,5 @@ Each report includes:
 
 ---
 
-## 📬 Contact
-
-For any issues, questions, or contributions, please [open an issue](https://github.com/yourusername/cervical-cancer-predictor/issues) on the GitHub repository.
-
----
 
 ⭐ **If you find this project useful, please give it a star on GitHub!**
